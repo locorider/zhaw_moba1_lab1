@@ -35,7 +35,8 @@ export class TagiComponent {
     this.http.get(url)
       .map(res => res.json())
       .subscribe(res => {
-        const newComments = res.comments.filter(c => -1 === this.comments.findIndex(comment => comment.id === c.id));
+        const newComments = res.comments.filter(c => -1 === this.comments.findIndex(comment => comment.id === c.id))
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
         for(let newComment of newComments) {
           this.comments.unshift(newComment);
         }
