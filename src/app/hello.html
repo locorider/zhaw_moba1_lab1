@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="card">
+    <div class="card-block">
+      <form (ngSubmit)="saveNote(note)">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" class="form-control" name="subject" [(ngModel)]="note.subject">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <input type="text" class="form-control" name="message" [(ngModel)]="note.message">
+        </div>
+        <div class="form-group">
+          <label>Creator</label>
+          <input type="text" class="form-control" name="creator" [(ngModel)]="note.creator">
+        </div>
+        <button type="submit" class="btn btn-primary">Save Note</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" role="alert" *ngIf="!notes || !notes.length">
+    There are no notes available yet
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let note of notes">
+      <div class="card">
+        <div class="card-block">
+          <h4 class="card-title">{{note.subject}}</h4>
+          <p class="card-text">{{note.message}}</p>
+          <span class="tag tag-primary">{{note.creator}}</span>
+          <span class="tag tag-default">{{note.dateTime}}</span>
+        </div>
+        <div class="card-block">
+          <a href="#" (click)="deleteNote(note)">Delete Note</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
