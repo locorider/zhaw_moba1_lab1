@@ -4,7 +4,10 @@
 import {Component} from '@angular/core';
 import {Http, Headers} from "@angular/http";
 
+import {Observable} from 'rxjs/Rx';
+
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/interval';
 
 @Component({
   template: require('./tagi.html'),
@@ -12,21 +15,31 @@ import 'rxjs/add/operator/map';
 })
 export class TagiComponent {
 
+  public loadingComments: boolean = false;
   public comments: any[] = [];
 
   constructor(private http: Http) {
-    this.loadComments();
+    Observable.interval(2000)
+      .subscribe(() => {
+        if(!this.loadingComments) {
+          this.loadComments();
+        }
+      });
   }
 
 
   loadComments() {
+    this.loadingComments = true;
     const url = 'http://www.tagesanzeiger.ch/api/articles/22062348/comments';
 
     this.http.get(url)
       .map(res => res.json())
       .subscribe(res => {
-        console.log(res);
-        this.comments = res.comments;
+        const newComments = res.comments.filter(c => -1 === this.comments.findIndex(comment => comment.id === c.id));
+        for(let newComment of newComments) {
+          this.comments.unshift(newComment);
+        }
+        this.loadingComments = false;
       })
   }
 }
