@@ -4,6 +4,7 @@ import {HttpModule} from '@angular/http';
 import {FormsModule} from '@angular/forms';
 import {AppComponent, routing} from "./routes";
 import {HelloComponent} from "./app/hello";
+import {TagiComponent} from "./app/tagi/TagiComponent";
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {HelloComponent} from "./app/hello";
   ],
   declarations: [
     AppComponent,
-    HelloComponent
+    HelloComponent,
+    TagiComponent
   ],
   providers: [
   ],
