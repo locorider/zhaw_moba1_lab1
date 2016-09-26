@@ -11,11 +11,12 @@ import 'rxjs/add/observable/interval';
 })
 export class HelloComponent {
   public notes: any[] = [];
-  public note: any = { dateTime: '12.12.1222' };
+  public note: any = { };
   public loadError: boolean = false;
-  public loadingNotes: boolean = true;
+  public loadingNotes: boolean = false;
+  public loadedFirstTime: boolean = false;
 
-  private baseUrl = 'http://160.85.39.212:8080/api';
+  private baseUrl = 'http://srv-lab-t-968.zhaw.ch:8080/api/';
 
   constructor(private http: Http) {
     Observable.interval(500)
@@ -30,14 +31,22 @@ export class HelloComponent {
   loadNotes() {
     this.loadingNotes = true;
 
-    this.http.get(`${this.baseUrl}/notes`)
+    this.http.get(`${this.baseUrl}notes`)
       .map(res => res.json())
       .subscribe(res => {
+        const newNotes = res.notes.filter(n => -1 === this.notes.findIndex(n0 => n0.id === n.id));
+
+        for(let newNote of newNotes) {
+          this.notes.unshift(newNote);
+          this.notes.sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
+            .reverse();
+        }
         this.loadError = false;
-        this.notes = res.notes;
+        this.loadedFirstTime = true;
         this.loadingNotes = false;
       }, err => {
-        this.loadError = true
+        this.loadError = true;
+        this.loadingNotes = false;
       });
   }
 
@@ -48,9 +57,10 @@ export class HelloComponent {
     query.set('message', note.message);
     query.set('creator', note.creator);
 
-    this.http.get(`${this.baseUrl}/addNote`, { search: query })
+    this.http.get(`${this.baseUrl}addNote`, { search: query })
       .map(res => res.json())
       .subscribe(res => {
+        note.dateTime = new Date();
         note.id = res.id;
         this.notes.unshift(note);
         this.note = {};
@@ -61,7 +71,7 @@ export class HelloComponent {
     const query = new URLSearchParams();
     query.set('id', note.id);
 
-    this.http.get(`${this.baseUrl}/deleteNote`, { search: query })
+    this.http.get(`${this.baseUrl}deleteNote`, { search: query })
       .map(res => res.json())
       .subscribe(res => {
         this.notes = this.notes.filter(n => n.id !== note.id);

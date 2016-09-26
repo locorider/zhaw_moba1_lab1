@@ -25,7 +25,7 @@
 <div class="alert alert-warning" role="alert" *ngIf="!loadingNotes && (!notes || !notes.length)">
   There are no notes available yet
 </div>
-<div class="alert alert-info" *ngIf="loadingNotes">
+<div class="alert alert-info" *ngIf="loadingNotes && !loadedFirstTime">
   Loading notes...
 </div>
 
@@ -36,7 +36,7 @@
         <h4 class="card-title">{{note.subject}}</h4>
         <p class="card-text">{{note.message}}</p>
         <span class="tag tag-primary">{{note.creator}}</span>
-        <span class="tag tag-default">{{note.dateTime}}</span>
+        <span class="tag tag-default">{{note.dateTime|date:'dd.MM.yyyy - HH:mm:ss'}}</span>
       </div>
       <div class="card-block">
         <a href="#" (click)="deleteNote(note)">Delete Note</a>
