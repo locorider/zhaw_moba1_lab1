@@ -1,4 +1,13 @@
 <div class="row">
+  <div class="col-xs-12">
+    <div class="form-group">
+      <label>Article ID</label>
+      <input type="text" class="form-control" name="articleId" [(ngModel)]="articleId" />
+    </div>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-xs-12 col-sm-6 col-md-4" *ngFor="let comment of comments">
     <div class="card" *ngIf="comment">
       <div class="card-block">
@@ -8,4 +17,8 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="alert alert-info" *ngIf="!comments || !comments.length">
+  No comments available
 </div>

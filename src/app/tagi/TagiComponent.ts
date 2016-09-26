@@ -15,10 +15,15 @@ import 'rxjs/add/observable/interval';
 })
 export class TagiComponent {
 
+  public articleId: string = '22062348';
   public loadingComments: boolean = false;
   public comments: any[] = [];
 
+  public prevArticleId: string = '22062348';
+
   constructor(private http: Http) {
+    this.loadComments();
+
     Observable.interval(2000)
       .subscribe(() => {
         if(!this.loadingComments) {
@@ -27,20 +32,30 @@ export class TagiComponent {
       });
   }
 
-
   loadComments() {
     this.loadingComments = true;
-    const url = 'http://www.tagesanzeiger.ch/api/articles/22062348/comments';
 
-    this.http.get(url)
-      .map(res => res.json())
-      .subscribe(res => {
-        const newComments = res.comments.filter(c => -1 === this.comments.findIndex(comment => comment.id === c.id))
-          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-        for(let newComment of newComments) {
-          this.comments.unshift(newComment);
-        }
-        this.loadingComments = false;
-      })
+    if(this.prevArticleId !== this.articleId) {
+      console.log('articleId changed', this.prevArticleId, this.articleId);
+      this.prevArticleId = this.articleId;
+      this.comments = [];
+    }
+
+    if(this.articleId) {
+      const url = `http://www.tagesanzeiger.ch/api/articles/${this.articleId}/comments`;
+
+      this.http.get(url)
+        .map(res => res.json())
+        .map(res => res.comments.filter(c => -1 === this.comments.findIndex(comment => comment.id === c.id))
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()))
+        .subscribe(newComments => {
+          for(let newComment of newComments) {
+            this.comments.unshift(newComment);
+          }
+          this.loadingComments = false;
+        })
+    } else {
+      this.loadingComments = false;
+    }
   }
 }
