@@ -1,25 +1,32 @@
+<div class="alert alert-danger" *ngIf="loadError">
+  <strong>Error loading notes</strong> Server unreachable
+</div>
+
 <div class="card">
   <div class="card-block">
-    <form (ngSubmit)="saveNote(note)">
+    <form (ngSubmit)="saveNote(note)" #noteForm="ngForm">
       <div class="form-group">
         <label>Subject</label>
-        <input type="text" class="form-control" name="subject" [(ngModel)]="note.subject">
+        <input type="text" class="form-control" name="subject" #subject="ngModel" [(ngModel)]="note.subject" required />
       </div>
       <div class="form-group">
         <label>Message</label>
-        <input type="text" class="form-control" name="message" [(ngModel)]="note.message">
+        <input type="text" class="form-control" name="message" #message="ngModel" [(ngModel)]="note.message" required />
       </div>
       <div class="form-group">
         <label>Creator</label>
-        <input type="text" class="form-control" name="creator" [(ngModel)]="note.creator">
+        <input type="text" class="form-control" name="creator" #creator="ngModel" [(ngModel)]="note.creator" required />
       </div>
-      <button type="submit" class="btn btn-primary">Save Note</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!noteForm.valid">Save Note</button>
     </form>
   </div>
 </div>
 
-<div class="alert alert-warning" role="alert" *ngIf="!notes || !notes.length">
+<div class="alert alert-warning" role="alert" *ngIf="!loadingNotes && (!notes || !notes.length)">
   There are no notes available yet
+</div>
+<div class="alert alert-info" *ngIf="loadingNotes">
+  Loading notes...
 </div>
 
 <div class="row">
