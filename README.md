@@ -4,7 +4,7 @@ Just call `npm install` and afterwards `npm run serve` to run the application wi
 # Building
 `npm run build`
 
-# Lab questtions
+# Lab questions
 ## However, the current implementation has one advantage over REST. What is this advantage?
 Depending on the design and environment of the application there might be more than a single advantage.
 
